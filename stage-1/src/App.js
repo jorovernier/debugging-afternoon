@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from 'axios';
 import StoreFront from "./Components/StoreFront/StoreFront";
 import ShoppingCart from "./Components/ShoppingCart/ShoppingCart";
 import NavBar from "./Components/NavBar/NavBar";
@@ -15,6 +16,7 @@ class App extends Component {
     this.removeFromCart = this.removeFromCart.bind(this);
     this.navigate = this.navigate.bind(this);
   }
+
   componentDidMount() {
     axios
       .get("https://practiceapi.devmountain.com/products/")
@@ -24,11 +26,13 @@ class App extends Component {
         });
       });
   }
+
   addToCart(item) {
     this.setState({
       cart: [...this.state.cart, item]
     });
   }
+
   removeFromCart(index) {
     let cartCopy = this.state.cart.slice();
     cartCopy.splice(index, 1);
@@ -36,6 +40,7 @@ class App extends Component {
       cart: cartCopy
     });
   }
+
   navigate(location) {
     if (location === "cart") {
       this.setState({
@@ -47,16 +52,17 @@ class App extends Component {
       });
     }
   }
+  
   render() {
-    const { products, showCart } = this.state;
+    const { products, cart, showCart } = this.state;
     return (
       <div className="App">
         <NavBar navigate={this.navigate} />
         <div className="main-container">
           {showCart ? (
-            <ShoppingCart cart={cart} />
+            <ShoppingCart cart={cart} removeFromCart={this.removeFromCart} />
           ) : (
-            <StoreFront products={products} />
+            <StoreFront products={products} addToCart={this.addToCart} />
           )}
         </div>
       </div>
